@@ -216,7 +216,7 @@ function ConfigureServer({
             }
             editing.current = false;
             fetchValidationResult(value);
-        }, 1000);
+        }, 5000);
     };
 
     const handleOnSaveButtonClick = (e: React.MouseEvent) => {
