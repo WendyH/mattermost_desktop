@@ -18,7 +18,6 @@ import MessagingView from 'common/views/MessagingView';
 import FocalboardView from 'common/views/FocalboardView';
 import PlaybooksView from 'common/views/PlaybooksView';
 import {getFormattedPathName, isInternalURL, parseURL} from 'common/utils/url';
-import Utils from 'common/utils/util';
 
 const log = new Logger('ServerManager');
 
@@ -108,7 +107,6 @@ export class ServerManager extends EventEmitter {
         remoteInfos.forEach((remoteInfo, serverId) => {
             this.remoteInfo.set(serverId, remoteInfo);
             hasUpdates = this.updateServerURL(serverId) || hasUpdates;
-            hasUpdates = this.openExtraViews(serverId) || hasUpdates;
         });
 
         if (hasUpdates) {
@@ -124,7 +122,8 @@ export class ServerManager extends EventEmitter {
             return undefined;
         }
         const server = this.getAllServers().find((server) => {
-            return isInternalURL(parsedURL, server.url, ignoreScheme) && getFormattedPathName(parsedURL.pathname).match(new RegExp(`^${server.url.pathname}(.+)?(/(.+))?$`));
+            return isInternalURL(parsedURL, server.url, ignoreScheme) &&
+                getFormattedPathName(parsedURL.pathname).startsWith(server.url.pathname);
         });
         if (!server) {
             return undefined;
@@ -135,7 +134,7 @@ export class ServerManager extends EventEmitter {
         views.
             filter((view) => view && view.type !== TAB_MESSAGING).
             forEach((view) => {
-                if (getFormattedPathName(parsedURL.pathname).match(new RegExp(`^${view.url.pathname}(/(.+))?`))) {
+                if (getFormattedPathName(parsedURL.pathname).startsWith(view.url.pathname)) {
                     selectedView = view;
                 }
             });
@@ -376,42 +375,6 @@ export class ServerManager extends EventEmitter {
             return true;
         }
         return false;
-    }
-
-    private openExtraViews = (serverId: string) => {
-        const server = this.servers.get(serverId);
-        const remoteInfo = this.remoteInfo.get(serverId);
-
-        if (!(server && remoteInfo)) {
-            return false;
-        }
-
-        if (!(remoteInfo.serverVersion && Utils.isVersionGreaterThanOrEqualTo(remoteInfo.serverVersion, '6.0.0'))) {
-            return false;
-        }
-
-        let hasUpdates = false;
-        const viewOrder = this.viewOrder.get(serverId);
-        if (viewOrder) {
-            viewOrder.forEach((viewId) => {
-                const view = this.views.get(viewId);
-                if (view) {
-                    if (view.type === TAB_PLAYBOOKS && remoteInfo.hasPlaybooks && typeof view.isOpen === 'undefined') {
-                        log.withPrefix(view.id).verbose('opening Playbooks');
-                        view.isOpen = true;
-                        this.views.set(viewId, view);
-                        hasUpdates = true;
-                    }
-                    if (view.type === TAB_FOCALBOARD && remoteInfo.hasFocalboard && typeof view.isOpen === 'undefined') {
-                        log.withPrefix(view.id).verbose('opening Boards');
-                        view.isOpen = true;
-                        this.views.set(viewId, view);
-                        hasUpdates = true;
-                    }
-                }
-            });
-        }
-        return hasUpdates;
     }
 
     private includeId = (id: string, ...prefixes: string[]) => {

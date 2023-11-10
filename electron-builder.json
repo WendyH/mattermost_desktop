@@ -44,13 +44,10 @@
     "artifactName": "${version}/${name}_${version}-1_${arch}.${ext}",
     "synopsis": "Mattermost Desktop App",
     "depends": [
-      "gconf2",
-      "gconf-service",
       "libnotify4",
       "libxtst6",
       "libnss3"
     ],
-    "category": "contrib/net",
     "priority": "optional"
   },
   "asarUnpack": [
