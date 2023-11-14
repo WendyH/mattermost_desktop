@@ -32,6 +32,7 @@ export function createTemplate() {
         }, {
             type: 'separator',
         }, {
+            label: localizeMessage('main.menus.app.file.exit', 'Exit'),
             role: 'quit',
         },
     ];

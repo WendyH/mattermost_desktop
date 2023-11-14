@@ -124,7 +124,7 @@
     "renderer.components.newServerModal.serverURL": "URL сервера",
     "renderer.components.newServerModal.serverDisplayName.description": "Имя сервера, отображаемое на панели вкладок вашего приложения.",
     "renderer.components.newServerModal.serverDisplayName": "Отображаемое имя сервера",
-    "common.tabs.TAB_MESSAGING": "Channels",
+    "common.tabs.TAB_MESSAGING": "Чат",
     "renderer.components.newServerModal.error.nameRequired": "Укажите имя сервера.",
     "renderer.components.newServerModal.error.urlRequired": "Укажите URL-адрес.",
     "renderer.components.newServerModal.error.urlNeedsHttp": "URL-адрес должен начинаться с http:// или https://.",
